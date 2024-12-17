@@ -1,7 +1,9 @@
-///|
+
 fn main {
-  let test1 = @lib.format_int(5, 42)
-  println(test1)
-  let test2 = @lib.format_int(3, 12345)
-  println(test2)
+  let a = @lib.format_int(3,3)
+  print(a)
+  let rounded = @lib.round_float(3.1415,3)
+  println(rounded)
+ 
 }
+
