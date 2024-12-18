@@ -1,92 +1,112 @@
-// Add padding spaces to the left of the number
-pub fn format_int(width: Int, num: Int) -> String {
-    let formatted = num.to_string();  
-    let padding = width - formatted.length();  
-    let mut result = "";  
-for i = 0; i < padding; i = i + 1 {
-        result = result + " ";  
-    }
-    result = result + formatted;  
-    result
-}
-// Function to round a floating-point number to a specified precision and return it as a string
-pub fn round_float(num: Float, precision: Int) -> String {
-  let format = "%." + precision.to_string() + "f"
-  let result = format_string(format, num)
-  result
+pub(all) struct Formatter {
+  types: Array[FMT_Type]
 }
 
-// Helper function to format the float number based on the specified format and handle rounding
-pub fn format_string(fmt: String, num: Float) -> String {
-  let mut result = ""     
-  let mut index = 0       
-  let mut lastnum = 0    
-  let mut check = false   
-  let mut num_str = num.to_string()  
-  let mut precision =0 
-  while index < fmt.length() {
-    if fmt[index] == '.' {
-      index += 1  
-      precision = fmt[index].to_int() - 48 
+pub(all) enum FMT_Type {
+  Text(String)        // Plain text
+  Int(space~: Int)    // Integer with optional width
+  Double(space_front~: Int, space_back~: Int, mode~: Bool)  // Double with width, precision, and rounding mode
+}
 
-      index += 1
-      let specifier = fmt[index]
+pub(all) enum Args_Type {
+  String(String)
+  Int(Int)
+  Double(Double)
+}
 
-      if specifier == 'f' {
-        let dot_index = num_str.index_of(".")
-        
-        if dot_index != -1 {
-          let integer_part = num_str.substring(start = 0, end = dot_index)
-          let decimal_part = num_str.substring(start = dot_index + 1)
-    
-          let truncated_decimal = decimal_part.substring(start = 0, end = precision)
-          num_str = integer_part + "." + truncated_decimal
-          lastnum = decimal_part[precision] - '0'
-        }
+// Formatter constructor: parses the format string and builds type list
+pub fn Formatter::new(fmt: String) -> Formatter {
+  let types: Array[FMT_Type] = []
+  let mut i = 0
+  
+  while i < fmt.length() {
+    if fmt[i] == '%' {   // Check for format specifier
+      i += 1
+      let mut space_front = 0
+      let space_back = 2  // Default precision for floats
+      let mode = true     // Default rounding mode
+      let mut precision = 0  // Default precision
 
-        result = result + num_str 
-        index += 1 
+      // Parse width (e.g., %10)
+      while i < fmt.length() && (fmt[i]>='0' && fmt[i]<='9' ) {
+        space_front = space_front * 10 + fmt[i].to_int() - 48
+        i += 1
       }
-    } 
-    index += 1
+
+      // Parse precision (e.g., %.3f)
+      if i < fmt.length() && fmt[i] == '.' {
+        i += 1
+        while i < fmt.length() && (fmt[i]>='0' && fmt[i]<='9') {
+          precision = precision * 10 + fmt[i].to_int() - 48
+          i += 1
+        }
+      }
+
+      // Handle format specifier (d or f)
+      if i < fmt.length() && fmt[i] == 'd' {
+        types.push(FMT_Type::Int(space=space_front))  // Int with width
+      } else if i < fmt.length() && fmt[i] == 'f' {
+        types.push(FMT_Type::Double(space_front=space_front, space_back=precision, mode=mode))  // Float with width, precision, and rounding
+      } else {
+        types.push(FMT_Type::Text("%" + fmt[i].to_string()))  // Literal text
+      }
+    } else {
+      types.push(FMT_Type::Text(fmt[i].to_string()))  // Literal text
+    }
+    i += 1
   }
 
-  if lastnum >= 5 {
-    check = true
-  }
+  return { types }
+}
 
-  if check {
-    let mut carry = true
-    let mut new_result = ""
-    
-    for i = result.length() - 1; i >= 0; i = i - 1 {
-      let current_char = result[i]
-      if carry {
-        if current_char == '.' {
-          new_result = "." + new_result
-        } else {
-          let digit = current_char.to_int() + 1 - 48
+// Format method: formats args based on the type list
+pub fn Formatter::fmt(self: Formatter, args: Array[Args_Type]) -> String {
+  let mut result = ""
+  let mut arg_index = 0
 
-          if digit == 10 {
-            new_result = "0" + new_result
-          } else {
-            new_result = digit.to_string() + new_result
-            carry = false
+  for typ in self.types {
+    match typ {
+      FMT_Type::Text(t) => {
+        result += t  // Append plain text
+      }
+      FMT_Type::Int(space~) => {
+        match args[arg_index] {
+          Args_Type::Int(val) => {
+            result += val.to_string().pad_start(space, ' ')  // Pad integer with space
+            arg_index += 1
           }
         }
-      } else {
-        new_result = current_char.to_string() + new_result
+      }
+      FMT_Type::Double(space_front~, space_back~, mode~) => {
+        match args[arg_index] {
+          Args_Type::Double(val) => {
+            let formatted = format_decimal(val, space_back)  // Format float to specified precision
+            result += formatted.pad_start(space_front, ' ')  // Pad float with space
+            arg_index += 1
+          }
+        }
       }
     }
-
-    if carry {
-      new_result = "1" + new_result
-    }
-
-    result = new_result
   }
-  if precision ==0{
-    result = result.substring(start=0,end=result.length()-1)
+
+  return result
+}
+
+// Helper function to format decimal numbers to the given precision
+pub fn format_decimal(num: Double, precision: Int) -> String {
+  let mut scale = 1  // Scale factor for rounding
+  for i = 0; i < precision; i = i + 1 {
+    scale *= 10  // Increase scale for precision
   }
-  result
+
+  let rounded = (num * scale.to_double() + 0.5).to_int()  // Round to nearest integer
+  let integer_part = (rounded / scale).to_string()  // Integer part of the formatted number
+  let decimal_part = (rounded % scale).to_string()  // Decimal part of the formatted number
+
+  let mut result = integer_part
+  if precision >= 1 {
+    result = result + "." + decimal_part  // Append decimal part if precision > 0
+  }
+
+  return result
 }
