@@ -1,6 +1,6 @@
 {
   "is_main": true,
   "import": [
-    "username/hello/lib"
+    "kesmeey/fmt/lib"
   ]
 }
