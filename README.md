@@ -1,11 +1,44 @@
+
+
 # fmt
 
-%s %d %f %X  %x用法样例
+一个类似于 C++ printf 和 Go fmt 的字符串格式化库。
+
+## 功能特点
+
+- 支持多种数据类型格式化
+- 提供宽度和精度控制
+- 支持左对齐/右对齐
+- 支持零填充
+- 支持科学计数法
+
+## 支持的格式化选项
+
+- `%d` - 整数
+- `%u` - 无符号整数
+- `%f` - 浮点数
+- `%e/%E` - 科学计数法
+- `%g/%G` - 自动选择 %f 或 %e
+- `%s` - 字符串
+- `%x/%X` - 十六进制（小写/大写）
+- `%o` - 八进制
+
+### 标志位
+
+- `-` : 左对齐
+- `+` : 显示正号
+- `0` : 零填充
+- 数字 : 指定宽度
+- `.数字` : 指定精度
+
+## 使用示例
+
+%s %d %f 用法样例
 
 ```
 fn main { 
  // 定义格式化字符串
-    let fmt_str = "Hello %s, you have %05d unread messages. Pi is approximately %.2f. Hex value: %08X It also equals %6x.";
+    let fmt_str = "Hello %s, you have %05d unread messages. Pi is approximately %.2f.";
 
     // 初始化Formatter
     let formatter = Formatter::new(fmt_str);
@@ -15,8 +48,6 @@ fn main {
         Args_Type::String("Alice".to_string()), // %s 替换为 "Alice"
         Args_Type::Int(42),                    // %05d 替换为 "00042"
         Args_Type::Double(3.14159),            // %.2f 替换为 "3.14"
-        Args_Type::Int(255),                   // %08X 替换为 "000000FF" (大写十六进制)
-        Args_Type::Int(255),                   // %6X 替换为""(小写十六进制)
     ];
 
     // 使用Formatter进行格式化
@@ -29,10 +60,39 @@ fn main {
 ```
 
 ```
-Hello Alice, you have 00042 unread messages. Pi is approximately 3.14. Hex value: 000000FF It also equals     ff.
+Hello Alice, you have 00042 unread messages. Pi is approximately 3.14.
 ```
 
+%u %X %x %o 用法样例
 
+```
+fn main { 
+    // 定义格式化字符串
+    let fmt_str = "Unsigned: %u, Hex Upper: %X, Hex Lower: %x, Octal: %o";
+
+    // 初始化Formatter
+    let formatter = Formatter::new(fmt_str);
+
+    // 定义参数
+    let args: Array[Args_Type] = [
+        Args_Type::UInt(4294967295),  // %u 替换为 "4294967295"
+        Args_Type::Int(255),          // %X 替换为 "FF"
+        Args_Type::Int(255),          // %x 替换为 "ff"
+        Args_Type::Int(255)           // %o 替换为 "377"
+    ];
+
+    // 使用Formatter进行格式化
+    let result = formatter.fmt(args);
+
+    // 打印结果
+    println(result); 
+}
+
+```
+
+```
+"Unsigned: 4294967295, Hex Upper: FF, Hex Lower: ff, Octal: 377"
+```
 
 科学技术法 %e %E 用法样例
 
@@ -85,6 +145,34 @@ fn main {
 零填充: 00000456
 ```
 
+字符串对齐用法样例
+
+```
+fn main { 
+    // 定义格式化字符串
+    let fmt_str = "Left aligned: '%-10s', Right aligned: '%10s'";
+
+    // 初始化Formatter
+    let formatter = Formatter::new(fmt_str);
+
+    // 定义参数
+    let args: Array[Args_Type] = [
+        Args_Type::String("left"),   // %-10s 替换为 "left      "
+        Args_Type::String("right")   // %10s 替换为 "     right"
+    ];
+
+    // 使用Formatter进行格式化
+    let result = formatter.fmt(args);
+
+    // 打印结果
+    println(result);  
+}
+```
+
+```
+Left aligned: 'left      ', Right aligned: '     right'
+```
+
 
 
  通用格式(%g/%G)用法样例
@@ -131,4 +219,6 @@ fn main {
 inf
 -INF
 ```
+
+
 
