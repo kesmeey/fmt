@@ -140,8 +140,15 @@ pub fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
   let mut result = integer_part
   if precision >= 1 {
     result = result + "." + decimal_part
+    // 去除多余零
+    while result.ends_with("0") {
+      result = result.substring(start = 0, end = result.length() - 1)
+    }
+    if result.ends_with(".") {
+      result = result.substring(start = 0, end = result.length() - 1)
+    }
   }
-  return result
+  result
 }
 
 ///|
