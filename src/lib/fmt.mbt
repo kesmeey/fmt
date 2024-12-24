@@ -87,7 +87,7 @@ pub fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
     return "0"
   }
 
-  let is_negative = val < 0
+  let is_negative = (base == 10) && (val < 0)    // 只在十进制时处理负号
   let mut num = val.abs()
   let mut result = ""
   while num > 0 {
