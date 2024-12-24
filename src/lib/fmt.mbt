@@ -80,14 +80,15 @@ fn format_general(num: Double, precision: Int, uppercase: Bool) -> String {
 pub fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
   let digits = match base {
     8 => "01234567"
+    10 => "0123456789"
     16 => if uppercase { "0123456789ABCDEF" } else { "0123456789abcdef" }
     _ => return "Unsupported base"
   }
   if val == 0 {
     return "0"
   }
-
-  let is_negative = (base == 10) && (val < 0)    // 只在十进制时处理负号
+  
+  let is_negative = (base == 10) && (val < 0)
   let mut num = val.abs()
   let mut result = ""
   while num > 0 {
