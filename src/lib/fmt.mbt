@@ -126,14 +126,20 @@ fn format_scientific(num : Double, precision : Int, uppercase : Bool) -> String 
 // 浮点数格式化函数
 ///|
 pub fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
+  // 负零检测
+  let mut number = num
+  if number == 0.0 {
+    number = 0.0
+  }
+  
   let mut scale = 1
   for i = 0; i < precision; i = i + 1 {
     scale *= 10
   }
   let rounded = if mode {
-    (num * scale.to_double() + 0.5).to_int() // 四舍五入
+    (number * scale.to_double() + 0.5).to_int()
   } else {
-    (num * scale.to_double()).to_int() // 直接截断
+    (number * scale.to_double()).to_int()
   }
   let integer_part = (rounded / scale).to_string()
   let decimal_part = (rounded % scale).to_string()
