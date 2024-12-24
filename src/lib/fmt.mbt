@@ -86,12 +86,17 @@ pub fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
   if val == 0 {
     return "0"
   }
+
+  let is_negative = val < 0
+  let mut num = val.abs()
   let mut result = ""
-  let mut num = val
   while num > 0 {
     let remainder = num % base
     result = result + digits[remainder].to_string()
     num /= base
+  }
+  if is_negative {
+    result = result + "-"
   }
   result.rev()
 }
