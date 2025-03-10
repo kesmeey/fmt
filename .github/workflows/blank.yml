@@ -1,0 +1,42 @@
+name: Test
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Setup MoonBit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Moonbit
+        uses: hustcer/setup-moonbit@develop
+
+      - name: Check Moonbit Version
+        run: |
+          moon version --all
+          moon update
+          moon install
+
+      - name: Run tests with coverage
+        run: |
+          moon test --enable-coverage
+
+      - name: Generate and upload coverage report
+        run: |
+          moon coverage report \
+            -f coveralls \
+            -o codecov_report.json \
+            --service-name github \
+            --service-job-id "$GITHUB_RUN_ID" \
+            --service-pull-request "${{ github.event.pull_request.number }}" \
+            --send-to codecov
+        env:
+          CODECOV_TOKEN: 4d0e0372-bb51-4e4e-8eb7-9d6a10af4783
