@@ -1,61 +1,58 @@
-
-
 # fmt
 
-一个类似于 C++ printf 和 Go fmt 的字符串格式化库。
+A string formatting library similar to `printf` in C++ and `fmt` in Go.
 
-## 功能特点
+## Features
 
-- 支持多种数据类型格式化
-- 提供宽度和精度控制
-- 支持左对齐/右对齐
-- 支持零填充
-- 支持科学计数法
+- Supports formatting of various data types.
+- Provides width and precision control.
+- Supports left/right alignment.
+- Supports zero-padding.
+- Supports scientific notation.
 
-## 支持的格式化选项
+## Supported Formatting Options
 
-- `%d` - 整数
-- `%u` - 无符号整数
-- `%f` - 浮点数
-- `%e/%E` - 科学计数法
-- `%g/%G` - 自动选择 %f 或 %e
-- `%s` - 字符串
-- `%x/%X` - 十六进制（小写/大写）
-- `%o` - 八进制
+- `%d` - Integer
+- `%u` - Unsigned integer
+- `%f` - Floating-point number
+- `%e/%E` - Scientific notation
+- `%g/%G` - Automatically choose between `%f` or `%e`
+- `%s` - String
+- `%x/%X` - Hexadecimal (lowercase/uppercase)
+- `%o` - Octal
 
-### 标志位
+### Flags
 
-- `-` : 左对齐
-- `+` : 显示正号
-- `0` : 零填充
-- 数字 : 指定宽度
-- `.数字` : 指定精度
+- `-` : Left alignment
+- `+` : Show plus sign for positive numbers
+- `0` : Zero-padding
+- Number : Specify width
+- `.Number` : Specify precision
 
-## 使用示例
+## Usage Examples
 
-%s %d %f 用法样例
+### Examples of `%s`, `%d`, `%f`
 
 ```
 fn main { 
- // 定义格式化字符串
+    // Define the format string
     let fmt_str = "Hello %s, you have %05d unread messages. Pi is approximately %.2f.";
 
-    // 初始化Formatter
+    // Initialize the Formatter
     let formatter = Formatter::new(fmt_str);
 
-    // 定义参数
+    // Define the arguments
     let args: Array[Args_Type] = [
-        Args_Type::String("Alice".to_string()), // %s 替换为 "Alice"
-        Args_Type::Int(42),                    // %05d 替换为 "00042"
-        Args_Type::Double(3.14159),            // %.2f 替换为 "3.14"
+        Args_Type::String("Alice".to_string()), // Replace %s with "Alice"
+        Args_Type::Int(42),                    // Replace %05d with "00042"
+        Args_Type::Double(3.14159),            // Replace %.2f with "3.14"
     ];
 
-    // 使用Formatter进行格式化
+    // Perform formatting using the Formatter
     let result = formatter.fmt(args);
 
-    // 打印结果
+    // Print the result
     println(result);
-
 }
 ```
 
@@ -63,108 +60,106 @@ fn main {
 Hello Alice, you have 00042 unread messages. Pi is approximately 3.14.
 ```
 
-%u %X %x %o 用法样例
+### Examples of `%u`, `%X`, `%x`, `%o`
 
 ```
 fn main { 
-    // 定义格式化字符串
+    // Define the format string
     let fmt_str = "Unsigned: %u, Hex Upper: %X, Hex Lower: %x, Octal: %o";
 
-    // 初始化Formatter
+    // Initialize the Formatter
     let formatter = Formatter::new(fmt_str);
 
-    // 定义参数
+    // Define the arguments
     let args: Array[Args_Type] = [
-        Args_Type::UInt(4294967295),  // %u 替换为 "4294967295"
-        Args_Type::Int(255),          // %X 替换为 "FF"
-        Args_Type::Int(255),          // %x 替换为 "ff"
-        Args_Type::Int(255)           // %o 替换为 "377"
+        Args_Type::UInt(4294967295),  // Replace %u with "4294967295"
+        Args_Type::Int(255),          // Replace %X with "FF"
+        Args_Type::Int(255),          // Replace %x with "ff"
+        Args_Type::Int(255)           // Replace %o with "377"
     ];
 
-    // 使用Formatter进行格式化
+    // Perform formatting using the Formatter
     let result = formatter.fmt(args);
 
-    // 打印结果
+    // Print the result
     println(result); 
 }
-
 ```
 
 ```
 "Unsigned: 4294967295, Hex Upper: FF, Hex Lower: ff, Octal: 377"
 ```
 
-科学技术法 %e %E 用法样例
+### Examples of Scientific Notation `%e`, `%E`
 
 ```
 fn main { 
- // 示例：科学计数法格式化
+    // Example: Formatting in scientific notation
     let fmt_str = "Scientific notation: %10.3e, Uppercase: %12.2E";
 
-    // 初始化Formatter
+    // Initialize the Formatter
     let formatter = Formatter::new(fmt_str);
 
-    // 定义参数
+    // Define the arguments
     let args: Array[Args_Type] = [
-        Args_Type::Double(0.00012345), // 科学计数法格式化（小写）
-        Args_Type::Double(-98765.4321), // 科学计数法格式化（大写）
+        Args_Type::Double(0.00012345), // Format in scientific notation (lowercase)
+        Args_Type::Double(-98765.4321), // Format in scientific notation (uppercase)
     ];
 
-    // 使用Formatter进行格式化
+    // Perform formatting using the Formatter
     let result = formatter.fmt(args);
 
-    // 打印结果
+    // Print the result
     println(result);
-
 }
 ```
 
 ```
-Scientific notation:  1.234e-04, Uppercase:   -9.-87E+04
+Scientific notation:  1.234e-04, Uppercase:   -9.87E+04
 ```
 
-标识符用法样例
+### Examples of Flag Usage
 
 ```
 fn main { 
-   //  标志位组合测试
-    let fmt1 = "整数标志位测试:\n正数显示: %+d\n空格填充: %8d\n零填充: %08d\n";
+    // Flag combination test
+    let fmt1 = "Integer flag test:\nShow plus for positive: %+d\nSpace padding: %8d\nZero padding: %08d\n";
     let args1: Array[Args_Type] = [
-        Args_Type::Int(42),    // 测试显示正号
-        Args_Type::Int(123),   // 测试空格填充
-        Args_Type::Int(456)    // 测试零填充
+        Args_Type::Int(42),    // Test showing plus sign
+        Args_Type::Int(123),   // Test space padding
+        Args_Type::Int(456)    // Test zero padding
     ];
     println(Formatter::new(fmt1).fmt(args1));
 }
 ```
 
 ```
-整数标志位测试:
-正数显示: +42
-空格填充:      123
-零填充: 00000456
+Integer flag test:
+Show plus for positive: +42
+Space padding:      123
+Zero padding: 00000456
 ```
 
-字符串对齐用法样例
+### Examples of String Alignment
 
 ```
 fn main { 
-    // 定义格式化字符串
+    // Define the format string
     let fmt_str = "Left aligned: '%-10s', Right aligned: '%10s'";
 
-    // 初始化Formatter
+    // Initialize the Formatter
     let formatter = Formatter::new(fmt_str);
 
-    // 定义参数
+    // Define the arguments
     let args: Array[Args_Type] = [
-        Args_Type::String("left"),   // %-10s 替换为 "left      "
-        Args_Type::String("right")   // %10s 替换为 "     right"
+        Args_Type::String("left"),   // Replace %-10s with "left      "
+        Args_Type::String("right")   // Replace %10s with "     right"
     ];
 
-    // 使用Formatter进行格式化
+    // Perform formatting using the Formatter
     let result = formatter.fmt(args);
 
-    // 打印结果
+    // Print the result
     println(result);  
 }
 ```
@@ -173,52 +168,46 @@ fn main {
 Left aligned: 'left      ', Right aligned: '     right'
 ```
 
-
-
- 通用格式(%g/%G)用法样例
+### Examples of General Format (`%g/%G`)
 
 ```
 fn main { 
-    //通用格式(%g/%G)测试
-    let fmt2 = "通用格式测试:\n小数: %g\n科学计数: %g\n大写形式: %G\n精度控制: %.3g\n";
+    // General format (%g/%G) test
+    let fmt2 = "General format test:\nDecimal: %g\nScientific: %g\nUppercase: %G\nPrecision control: %.3g\n";
     let args2: Array[Args_Type] = [
-        Args_Type::Double(123.456),      // 常规小数
-        Args_Type::Double(0.000123),     // 自动使用科学计数
-        Args_Type::Double(1.23e+6),      // 大写形式测试
-        Args_Type::Double(1234.5678)     // 精度控制测试
+        Args_Type::Double(123.456),      // Regular decimal
+        Args_Type::Double(0.000123),     // Automatically use scientific notation
+        Args_Type::Double(1.23e+6),      // Uppercase test
+        Args_Type::Double(1234.5678)     // Precision control test
     ];
     println(Formatter::new(fmt2).fmt(args2));
-
 }
 ```
 
 ```
-通用格式测试:
-小数: 123.456
-科学计数: 0.123000
-大写形式: 1.23000E+06
-精度控制: 1.23e+03
+General format test:
+Decimal: 123.456
+Scientific: 1.23e-04
+Uppercase: 1.23E+06
+Precision control: 1.23e+03
 ```
 
-特殊值（正无穷大 负无穷大） 用法样例
+### Examples of Special Values (Positive Infinity, Negative Infinity)
 
 ```
- fn main { 
- // 特殊值测试
-    let fmt4 = "特殊值测试:\n%g\n%G\n";
+fn main { 
+    // Special value test
+    let fmt4 = "Special value test:\n%g\n%G\n";
     let args4: Array[Args_Type] = [
-        Args_Type::Double(1.0/0.0),      // 正无穷
-        Args_Type::Double(-1.0/0.0)      // 负无穷
+        Args_Type::Double(1.0/0.0),      // Positive infinity
+        Args_Type::Double(-1.0/0.0)      // Negative infinity
     ];
     println(Formatter::new(fmt4).fmt(args4));
 }
 ```
 
 ```
-特殊值测试:
+Special value test:
 inf
 -INF
 ```
-
-
-

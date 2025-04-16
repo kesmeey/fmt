@@ -55,7 +55,7 @@ fn is_nan(num : Double) -> Bool {
 }
 
 ///|
-pub fn max(a : Int, b : Int) -> Int {
+fn max(a : Int, b : Int) -> Int {
   if a >= b {
     a
   } else {
@@ -92,7 +92,7 @@ fn format_general(num : Double, precision : Int, uppercase : Bool) -> String {
 
 // 进制转换函数
 ///|
-pub fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
+fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
   let digits = match base {
     8 => "01234567"
     16 => if uppercase { "0123456789ABCDEF" } else { "0123456789abcdef" }
@@ -134,7 +134,7 @@ fn format_scientific(num : Double, precision : Int, uppercase : Bool) -> String 
 
 // 浮点数格式化函数
 ///|
-pub fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
+fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
   // 负零检测
   let mut number = num
   if number == 0.0 {
@@ -371,9 +371,33 @@ pub fn Formatter::fmt(self : Formatter, args : Array[Args_Type]) -> String {
               }
               sign + format_decimal(val.abs(), space_back, mode)
             }
-            let padding = " ".repeat(max(0, space_front - formatted.length()))
+
+            // 根据zero_pad选择填充字符
+            let pad_char = if zero_pad && left_align == false {
+              "0"
+            } else {
+              " "
+            }
+            let padding = pad_char.repeat(
+              max(0, space_front - formatted.length()),
+            )
+
+            // 特殊处理零填充和符号
             result += if left_align {
               formatted + padding
+            } else if zero_pad &&
+              is_infinite(val) == false &&
+              is_nan(val) == false {
+              // 对于零填充，需要将符号放在填充字符前面
+              let sign_part = if val >= 0.0 && show_sign {
+                "+"
+              } else if val < 0.0 {
+                "-"
+              } else {
+                ""
+              }
+              let value_part = formatted.substring(start=sign_part.length())
+              sign_part + padding + value_part
             } else {
               padding + formatted
             }
