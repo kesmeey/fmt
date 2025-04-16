@@ -33,6 +33,8 @@ pub(all) enum FMT_Type {
     show_sign~ : Bool
   ) // 新增General类型
   Unsigned(space~ : Int, zero_pad~ : Bool, left_align~ : Bool)
+  Char(space~ : Int, left_align~ : Bool) // 新增字符类型
+  Bool(space~ : Int, left_align~ : Bool) // 新增布尔类型
 }
 
 ///|
@@ -41,6 +43,8 @@ pub(all) enum Args_Type {
   Int(Int)
   UInt(UInt) // 无符号整数
   Double(Double)
+  Char(Char) // 新增字符类型
+  Bool(Bool) // 新增布尔类型
 }
 
 // 添加辅助函数检测特殊浮点数值
@@ -290,6 +294,8 @@ pub fn Formatter::new(fmt : String) -> Formatter {
             types.push(
               FMT_Type::Unsigned(space=space_front, zero_pad~, left_align~),
             )
+          'c' => types.push(FMT_Type::Char(space=space_front, left_align~))
+          't' => types.push(FMT_Type::Bool(space=space_front, left_align~))
           _ => types.push(FMT_Type::Text("%" + fmt[i].to_string()))
         }
       }
@@ -574,6 +580,44 @@ pub fn Formatter::fmt(self : Formatter, args : Array[Args_Type]) -> String {
             arg_index += 1
           }
           _ => println("Type mismatch: expected UInt")
+        }
+      }
+      FMT_Type::Char(space~, left_align~) => {
+        if arg_index >= args.length() {
+          println("Not enough arguments")
+          break
+        }
+        match args[arg_index] {
+          Args_Type::Char(val) => {
+            let str_val = val.to_string()
+            let padding = " ".repeat(max(0, space - 1)) // 字符总是长度为1
+            result += if left_align {
+              str_val + padding
+            } else {
+              padding + str_val
+            }
+            arg_index += 1
+          }
+          _ => println("Type mismatch: expected Char")
+        }
+      }
+      FMT_Type::Bool(space~, left_align~) => {
+        if arg_index >= args.length() {
+          println("Not enough arguments")
+          break
+        }
+        match args[arg_index] {
+          Args_Type::Bool(val) => {
+            let str_val = if val { "true" } else { "false" }
+            let padding = " ".repeat(max(0, space - str_val.length()))
+            result += if left_align {
+              str_val + padding
+            } else {
+              padding + str_val
+            }
+            arg_index += 1
+          }
+          _ => println("Type mismatch: expected Bool")
         }
       }
     }

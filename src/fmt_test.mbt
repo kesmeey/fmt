@@ -1,7 +1,48 @@
-///| 测试基本文本格式化
+///| 为什么要写这个库
 test "test" {
   let num = 123.321
-  println("num: \{num}")
+  println("num: \{num}") // num: 123.321
+}
+
+///|
+///| 测试所有格式化说明符类型
+test "fmt_all_specifiers" {
+  let formatter = @fmt.Formatter::new(
+    "小写十六进制: %x\n" +
+    "大写十六进制: %X\n" +
+    "八进制: %o\n" +
+    "科学计数法(小写): %.2e\n" +
+    "科学计数法(大写): %.2E\n" +
+    "通用格式(小数): %g\n" +
+    "通用格式(大数，小写): %g\n" +
+    "通用格式(大数，大写): %G\n" +
+    "无符号整数: %u",
+  )
+  let args = [
+    @fmt.Args_Type::Int(255), // %x
+    @fmt.Args_Type::Int(255), // %X
+    @fmt.Args_Type::Int(64), // %o
+    @fmt.Args_Type::Double(1234.5678), // %e
+    @fmt.Args_Type::Double(1234.5678), // %E
+    @fmt.Args_Type::Double(3.14159), // %g (小数)
+    @fmt.Args_Type::Double(123456789.0), // %g (大数)
+    @fmt.Args_Type::Double(123456789.0), // %G (大数)
+    @fmt.Args_Type::UInt(42), // %u
+  ]
+  let result = formatter.fmt(args)
+  println(result)
+  let expected = "小写十六进制: ff\n" +
+    "大写十六进制: FF\n" +
+    "八进制: 100\n" +
+    "科学计数法(小写): 1.23e+03\n" +
+    "科学计数法(大写): 1.23E+03\n" +
+    "通用格式(小数): 3.14159\n" +
+    "通用格式(大数，小写): 1.23457e+08\n" +
+    "通用格式(大数，大写): 1.23457E+08\n" +
+    "无符号整数: 42"
+  if result != expected {
+    fail!("All specifiers formatting test failed")
+  }
 }
 
 ///|
@@ -273,5 +314,93 @@ test "fmt_empty_format_string" {
   println(result)
   if result != "" {
     fail!("Empty format string test failed")
+  }
+}
+
+///| 测试字符格式化
+test "fmt_char" {
+  let formatter = @fmt.Formatter::new("%c")
+  let args = [@fmt.Args_Type::Char('A')]
+  let result = formatter.fmt(args)
+  println(result)
+  if result != "A" {
+    fail!("Character formatting failed")
+  }
+}
+
+///| 测试字符宽度和对齐
+test "fmt_char_width_align" {
+  let formatter = @fmt.Formatter::new("'%5c' '%-5c'")
+  let args = [@fmt.Args_Type::Char('A'), @fmt.Args_Type::Char('B')]
+  let result = formatter.fmt(args)
+  println(result)
+  if result != "'    A' 'B    '" {
+    fail!("Character width and alignment failed")
+  }
+}
+
+///| 测试布尔值格式化
+test "fmt_bool" {
+  let formatter = @fmt.Formatter::new("%t %t")
+  let args = [@fmt.Args_Type::Bool(true), @fmt.Args_Type::Bool(false)]
+  let result = formatter.fmt(args)
+  println(result)
+  if result != "true false" {
+    fail!("Boolean formatting failed")
+  }
+}
+
+///| 测试布尔值宽度和对齐
+test "fmt_bool_width_align" {
+  let formatter = @fmt.Formatter::new("'%8t' '%-8t'")
+  let args = [@fmt.Args_Type::Bool(true), @fmt.Args_Type::Bool(false)]
+  let result = formatter.fmt(args)
+  println(result)
+  if result != "'    true' 'false   '" {
+    fail!("Boolean width and alignment failed")
+  }
+}
+
+///| 测试所有格式化说明符包括新增的字符和布尔类型
+test "fmt_all_specifiers_extended" {
+  let formatter = @fmt.Formatter::new(
+    "整数: %d\n" +
+    "浮点数: %.2f\n" +
+    "字符串: %s\n" +
+    "字符: %c\n" + // 新增
+    "布尔值: %t\n" + // 新增
+    "小写十六进制: %x\n" +
+    "大写十六进制: %X\n" +
+    "八进制: %o\n" +
+    "科学计数法(小写): %.2e\n" +
+    "科学计数法(大写): %.2E\n" +
+    "通用格式(小数): %g\n" +
+    "通用格式(大数，小写): %g\n" +
+    "通用格式(大数，大写): %G\n" +
+    "无符号整数: %u",
+  )
+  let args = [
+    @fmt.Args_Type::Int(42),
+    @fmt.Args_Type::Double(3.14159),
+    @fmt.Args_Type::String("hello"),
+    @fmt.Args_Type::Char('Z'), // 新增
+    @fmt.Args_Type::Bool(true), // 新增
+    @fmt.Args_Type::Int(255),
+    @fmt.Args_Type::Int(255),
+    @fmt.Args_Type::Int(64),
+    @fmt.Args_Type::Double(1234.5678),
+    @fmt.Args_Type::Double(1234.5678),
+    @fmt.Args_Type::Double(3.14159),
+    @fmt.Args_Type::Double(123456789.0),
+    @fmt.Args_Type::Double(123456789.0),
+    @fmt.Args_Type::UInt(42),
+  ]
+  let result = formatter.fmt(args)
+  println(result)
+
+  // 检查包含新格式说明符的结果
+  if result.contains("字符: Z") == false ||
+    result.contains("布尔值: true") == false {
+    fail!("Extended formatting test failed")
   }
 }
