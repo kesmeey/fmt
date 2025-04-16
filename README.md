@@ -33,7 +33,7 @@ A string formatting library similar to `printf` in C++ and `fmt` in Go.
 
 ### Examples of `%s`, `%d`, `%f`
 
-```
+```moonbit
 fn main { 
     // Define the format string
     let fmt_str = "Hello %s, you have %05d unread messages. Pi is approximately %.2f.";
@@ -62,7 +62,7 @@ Hello Alice, you have 00042 unread messages. Pi is approximately 3.14.
 
 ### Examples of `%u`, `%X`, `%x`, `%o`
 
-```
+```moonbit
 fn main { 
     // Define the format string
     let fmt_str = "Unsigned: %u, Hex Upper: %X, Hex Lower: %x, Octal: %o";
@@ -92,7 +92,7 @@ fn main {
 
 ### Examples of Scientific Notation `%e`, `%E`
 
-```
+```moonbit
 fn main { 
     // Example: Formatting in scientific notation
     let fmt_str = "Scientific notation: %10.3e, Uppercase: %12.2E";
@@ -120,7 +120,7 @@ Scientific notation:  1.234e-04, Uppercase:   -9.87E+04
 
 ### Examples of Flag Usage
 
-```
+```moonbit
 fn main { 
     // Flag combination test
     let fmt1 = "Integer flag test:\nShow plus for positive: %+d\nSpace padding: %8d\nZero padding: %08d\n";
@@ -142,7 +142,7 @@ Zero padding: 00000456
 
 ### Examples of String Alignment
 
-```
+```moonbit
 fn main { 
     // Define the format string
     let fmt_str = "Left aligned: '%-10s', Right aligned: '%10s'";
@@ -170,7 +170,7 @@ Left aligned: 'left      ', Right aligned: '     right'
 
 ### Examples of General Format (`%g/%G`)
 
-```
+```moonbit
 fn main { 
     // General format (%g/%G) test
     let fmt2 = "General format test:\nDecimal: %g\nScientific: %g\nUppercase: %G\nPrecision control: %.3g\n";
@@ -194,7 +194,7 @@ Precision control: 1.23e+03
 
 ### Examples of Special Values (Positive Infinity, Negative Infinity)
 
-```
+```moonbit
 fn main { 
     // Special value test
     let fmt4 = "Special value test:\n%g\n%G\n";
