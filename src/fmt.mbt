@@ -163,8 +163,9 @@ fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
   let mut result = integer_part
   if precision >= 1 {
     result = result + "." + decimal_part
-    if result.ends_with(".") {
-      result = result.substring(start=0, end=result.length() - 1)
+    match result.strip_suffix(".") {
+      Some(stripped) => result = stripped.to_string()
+      None => ()
     }
   }
   result
@@ -209,7 +210,9 @@ pub fn Formatter::new(fmt : String) -> Formatter {
 
       // 解析宽度
       while i < fmt.length() && fmt[i] >= '0' && fmt[i] <= '9' {
-        space_front = space_front * 10 + fmt[i].to_int() - 48
+        space_front = space_front * 10 +
+          fmt[i].reinterpret_as_uint().reinterpret_as_int() -
+          48
         i += 1
       }
 
@@ -218,7 +221,9 @@ pub fn Formatter::new(fmt : String) -> Formatter {
         i += 1
         space_back = 0
         while i < fmt.length() && fmt[i] >= '0' && fmt[i] <= '9' {
-          space_back = space_back * 10 + fmt[i].to_int() - 48
+          space_back = space_back * 10 +
+            fmt[i].reinterpret_as_uint().reinterpret_as_int() -
+            48
           i += 1
         }
       }
