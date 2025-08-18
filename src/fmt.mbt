@@ -1,4 +1,5 @@
 // 基本数据结构定义
+
 ///|
 pub(all) struct Formatter {
   types : Array[FMT_Type]
@@ -48,6 +49,7 @@ pub(all) enum Args_Type {
 }
 
 // 添加辅助函数检测特殊浮点数值
+
 ///|
 fn is_infinite(num : Double) -> Bool {
   num == 1.0 / 0.0 || num == -1.0 / 0.0
@@ -95,6 +97,7 @@ fn format_general(num : Double, precision : Int, uppercase : Bool) -> String {
 }
 
 // 进制转换函数
+
 ///|
 fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
   let digits = match base {
@@ -116,6 +119,7 @@ fn to_base(val : Int, base : Int, uppercase : Bool) -> String {
 }
 
 // 科学计数法格式化函数
+
 ///|
 fn format_scientific(num : Double, precision : Int, uppercase : Bool) -> String {
   let mut exponent = 0
@@ -137,6 +141,7 @@ fn format_scientific(num : Double, precision : Int, uppercase : Bool) -> String 
 }
 
 // 浮点数格式化函数
+
 ///|
 fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
   // 负零检测
@@ -158,8 +163,9 @@ fn format_decimal(num : Double, precision : Int, mode : Bool) -> String {
   let mut result = integer_part
   if precision >= 1 {
     result = result + "." + decimal_part
-    if result.ends_with(".") {
-      result = result.substring(start=0, end=result.length() - 1)
+    match result.strip_suffix(".") {
+      Some(stripped) => result = stripped.to_string()
+      None => ()
     }
   }
   result
@@ -204,7 +210,9 @@ pub fn Formatter::new(fmt : String) -> Formatter {
 
       // 解析宽度
       while i < fmt.length() && fmt[i] >= '0' && fmt[i] <= '9' {
-        space_front = space_front * 10 + fmt[i].to_int() - 48
+        space_front = space_front * 10 +
+          fmt[i].reinterpret_as_uint().reinterpret_as_int() -
+          48
         i += 1
       }
 
@@ -213,7 +221,9 @@ pub fn Formatter::new(fmt : String) -> Formatter {
         i += 1
         space_back = 0
         while i < fmt.length() && fmt[i] >= '0' && fmt[i] <= '9' {
-          space_back = space_back * 10 + fmt[i].to_int() - 48
+          space_back = space_back * 10 +
+            fmt[i].reinterpret_as_uint().reinterpret_as_int() -
+            48
           i += 1
         }
       }

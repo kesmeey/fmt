@@ -1,0 +1,42 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "kesmeey/fmt"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum Args_Type {
+  String(String)
+  Int(Int)
+  UInt(UInt)
+  Double(Double)
+  Char(Char)
+  Bool(Bool)
+}
+
+pub(all) enum FMT_Type {
+  Text(String)
+  Int(space~ : Int, zero_pad~ : Bool, left_align~ : Bool, show_sign~ : Bool)
+  Double(space_front~ : Int, space_back~ : Int, mode~ : Bool, zero_pad~ : Bool, left_align~ : Bool, show_sign~ : Bool)
+  String(space~ : Int, left_align~ : Bool)
+  HexLower(space~ : Int, zero_pad~ : Bool, left_align~ : Bool)
+  HexUpper(space~ : Int, zero_pad~ : Bool, left_align~ : Bool)
+  Octal(space~ : Int, zero_pad~ : Bool, left_align~ : Bool)
+  Scientific(space_front~ : Int, space_back~ : Int, uppercase~ : Bool, show_sign~ : Bool)
+  General(space_front~ : Int, space_back~ : Int, uppercase~ : Bool, show_sign~ : Bool)
+  Unsigned(space~ : Int, zero_pad~ : Bool, left_align~ : Bool)
+  Char(space~ : Int, left_align~ : Bool)
+  Bool(space~ : Int, left_align~ : Bool)
+}
+
+pub(all) struct Formatter {
+  types : Array[FMT_Type]
+}
+fn Formatter::fmt(Self, Array[Args_Type]) -> String
+fn Formatter::new(String) -> Self
+
+// Type aliases
+
+// Traits
+

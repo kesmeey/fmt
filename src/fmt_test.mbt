@@ -5,6 +5,7 @@ test "test" {
 }
 
 ///|
+
 ///| 测试所有格式化说明符类型
 test "fmt_all_specifiers" {
   let formatter = @fmt.Formatter::new(
@@ -41,7 +42,7 @@ test "fmt_all_specifiers" {
     "通用格式(大数，大写): 1.23457E+08\n" +
     "无符号整数: 42"
   if result != expected {
-    fail!("All specifiers formatting test failed")
+    fail("All specifiers formatting test failed")
   }
 }
 
@@ -52,7 +53,7 @@ test "fmt_basic_text" {
   let result = formatter.fmt(args)
   println(result)
   if result != "Hello, World!" {
-    fail!("Basic text formatting failed")
+    fail("Basic text formatting failed")
   }
 }
 
@@ -63,7 +64,7 @@ test "fmt_integer" {
   let result = formatter.fmt(args)
   println(result)
   if result != "42" {
-    fail!("Integer formatting failed")
+    fail("Integer formatting failed")
   }
 }
 
@@ -74,7 +75,7 @@ test "fmt_integer_width" {
   let result = formatter.fmt(args)
   println(result)
   if result != "   42" {
-    fail!("Integer width formatting failed")
+    fail("Integer width formatting failed")
   }
 }
 
@@ -85,7 +86,7 @@ test "fmt_integer_zero_pad" {
   let result = formatter.fmt(args)
   println(result)
   if result != "00042" {
-    fail!("Integer zero padding failed")
+    fail("Integer zero padding failed")
   }
 }
 
@@ -96,7 +97,7 @@ test "fmt_integer_left_align" {
   let result = formatter.fmt(args)
   println(result)
   if result != "'42   '" {
-    fail!("Integer left alignment failed")
+    fail("Integer left alignment failed")
   }
 }
 
@@ -107,7 +108,7 @@ test "fmt_integer_show_sign" {
   let result = formatter.fmt(args)
   println(result)
   if result != "+42" {
-    fail!("Integer show sign failed")
+    fail("Integer show sign failed")
   }
 }
 
@@ -118,7 +119,7 @@ test "fmt_float" {
   let result = formatter.fmt(args)
   println(result)
   if result != "3.14" {
-    fail!("Float formatting failed")
+    fail("Float formatting failed")
   }
 }
 
@@ -129,7 +130,7 @@ test "fmt_float_width_precision" {
   let result = formatter.fmt(args)
   println(result)
   if result != "   3.142" {
-    fail!("Float width and precision failed")
+    fail("Float width and precision failed")
   }
 }
 
@@ -140,7 +141,7 @@ test "fmt_float_zero_pad" {
   let result = formatter.fmt(args)
   println(result)
   if result != "0003.142" {
-    fail!("Float zero padding failed")
+    fail("Float zero padding failed")
   }
 }
 
@@ -151,7 +152,7 @@ test "fmt_string" {
   let result = formatter.fmt(args)
   println(result)
   if result != "test" {
-    fail!("String formatting failed")
+    fail("String formatting failed")
   }
 }
 
@@ -162,7 +163,7 @@ test "fmt_string_width" {
   let result = formatter.fmt(args)
   println(result)
   if result != "      test" {
-    fail!("String width formatting failed")
+    fail("String width formatting failed")
   }
 }
 
@@ -173,7 +174,7 @@ test "fmt_string_left_align" {
   let result = formatter.fmt(args)
   println(result)
   if result != "'left      '" {
-    fail!("String left alignment failed")
+    fail("String left alignment failed")
   }
 }
 
@@ -184,7 +185,7 @@ test "fmt_hex_lower" {
   let result = formatter.fmt(args)
   println(result)
   if result != "ff" {
-    fail!("Lowercase hex formatting failed")
+    fail("Lowercase hex formatting failed")
   }
 }
 
@@ -195,7 +196,7 @@ test "fmt_hex_upper" {
   let result = formatter.fmt(args)
   println(result)
   if result != "FF" {
-    fail!("Uppercase hex formatting failed")
+    fail("Uppercase hex formatting failed")
   }
 }
 
@@ -206,7 +207,7 @@ test "fmt_octal" {
   let result = formatter.fmt(args)
   println(result)
   if result != "10" {
-    fail!("Octal formatting failed")
+    fail("Octal formatting failed")
   }
 }
 
@@ -217,7 +218,7 @@ test "fmt_scientific" {
   let result = formatter.fmt(args)
   println(result)
   if result != "1.23e+03" {
-    fail!("Scientific notation formatting failed")
+    fail("Scientific notation formatting failed")
   }
 }
 
@@ -228,7 +229,7 @@ test "fmt_general" {
   let result = formatter.fmt(args)
   println(result)
   if result != "1.23457e+08" {
-    fail!("General format for large numbers failed")
+    fail("General format for large numbers failed")
   }
 }
 
@@ -239,7 +240,7 @@ test "fmt_unsigned" {
   let result = formatter.fmt(args)
   println(result)
   if result != "42" {
-    fail!("Unsigned integer formatting failed")
+    fail("Unsigned integer formatting failed")
   }
 }
 
@@ -254,7 +255,7 @@ test "fmt_multiple_specifiers" {
   let result = formatter.fmt(args)
   println(result)
   if result != "Name: John, Age: 30, Height: 1.85" {
-    fail!("Multiple format specifiers failed")
+    fail("Multiple format specifiers failed")
   }
 }
 
@@ -265,14 +266,14 @@ test "fmt_special_float_values" {
   let inf_result = inf_formatter.fmt(inf_args)
   println(inf_result)
   if inf_result != "inf" {
-    fail!("Infinity formatting failed")
+    fail("Infinity formatting failed")
   }
   let nan_formatter = @fmt.Formatter::new("%f")
   let nan_args = [@fmt.Args_Type::Double(0.0 / 0.0)]
   let nan_result = nan_formatter.fmt(nan_args)
   println(nan_result)
   if nan_result != "nan" {
-    fail!("NaN formatting failed")
+    fail("NaN formatting failed")
   }
 }
 
@@ -287,7 +288,7 @@ test "fmt_combined_formatting" {
   let result = formatter.fmt(args)
   println(result)
   if result != "+0042 |    3.142 | test      " {
-    fail!("Combined formatting failed")
+    fail("Combined formatting failed")
   }
 }
 
@@ -302,7 +303,7 @@ test "fmt_printf_style" {
   let result = formatter.fmt(args)
   println(result)
   if result != "Integer: 123, Float: 45.68, String: hello" {
-    fail!("Printf style formatting failed")
+    fail("Printf style formatting failed")
   }
 }
 
@@ -313,7 +314,7 @@ test "fmt_empty_format_string" {
   let result = formatter.fmt(args)
   println(result)
   if result != "" {
-    fail!("Empty format string test failed")
+    fail("Empty format string test failed")
   }
 }
 
@@ -324,7 +325,7 @@ test "fmt_char" {
   let result = formatter.fmt(args)
   println(result)
   if result != "A" {
-    fail!("Character formatting failed")
+    fail("Character formatting failed")
   }
 }
 
@@ -335,7 +336,7 @@ test "fmt_char_width_align" {
   let result = formatter.fmt(args)
   println(result)
   if result != "'    A' 'B    '" {
-    fail!("Character width and alignment failed")
+    fail("Character width and alignment failed")
   }
 }
 
@@ -346,7 +347,7 @@ test "fmt_bool" {
   let result = formatter.fmt(args)
   println(result)
   if result != "true false" {
-    fail!("Boolean formatting failed")
+    fail("Boolean formatting failed")
   }
 }
 
@@ -357,7 +358,7 @@ test "fmt_bool_width_align" {
   let result = formatter.fmt(args)
   println(result)
   if result != "'    true' 'false   '" {
-    fail!("Boolean width and alignment failed")
+    fail("Boolean width and alignment failed")
   }
 }
 
@@ -401,6 +402,6 @@ test "fmt_all_specifiers_extended" {
   // 检查包含新格式说明符的结果
   if result.contains("字符: Z") == false ||
     result.contains("布尔值: true") == false {
-    fail!("Extended formatting test failed")
+    fail("Extended formatting test failed")
   }
 }
